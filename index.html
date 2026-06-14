@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psychometrix 🧠✨</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true
+        },
+        options: {
+            renderActions: { addMenu: [] },
+            enableMenu: false
+        },
+        chtml: { displayAlign: 'center' }
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+    <div class="screen active" id="home-screen">
+        <div class="top-bar">
+            <div class="profile-block">
+                <div class="avatar">א</div>
+                <div class="profile-text">
+                    <div class="greeting">היי אלעד 👋</div>
+                    <div class="daily-progress" id="daily-progress-label">התקדמות יומית: 0/10 שאלות 🎯</div>
+                    <div class="daily-bar-bg"><div class="daily-bar-fill" id="daily-bar-fill"></div></div>
+                </div>
+            </div>
+            <div class="goal-block">
+                <div class="goal-label">ניקוד</div>
+                <div class="goal-value" id="goal-value">0 🏆</div>
+            </div>
+        </div>
+
+        <div class="hero">
+            <div class="hero-title">Psychometrix 🧠✨</div>
+            <div class="hero-sub">מוכן לתרגול היומי שלך? בוא נשבור את הפרק הכמותי! 💪</div>
+        </div>
+
+        <div class="menu-grid">
+            <button class="menu-tile featured" onclick="startQuiz()">
+                <div class="tile-icon-wrap" style="background:rgba(255,255,255,0.18);">⚡</div>
+                <div class="featured-text">
+                    <div class="tile-title">תרגול מהיר</div>
+                    <div class="tile-sub">5 שאלות אקראיות מהבנק 🎓</div>
+                </div>
+                <div class="tile-arrow">←</div>
+            </button>
+
+            <button class="menu-tile" onclick="startQuiz('algebra')">
+                <div class="tile-icon-wrap pink">🔢</div>
+                <div class="tile-title">אלגברה ואחוזים</div>
+                <div class="tile-sub" id="algebra-count">תרגול ממוקד</div>
+            </button>
+
+            <button class="menu-tile" onclick="startQuiz('geometry')">
+                <div class="tile-icon-wrap blue">📐</div>
+                <div class="tile-title">גיאומטריה</div>
+                <div class="tile-sub" id="geometry-count">תרגול ממוקד</div>
+            </button>
+
+            <button class="menu-tile" onclick="startQuiz('motion')" style="grid-column: 1 / -1;">
+                <div class="tile-icon-wrap orange">🏎️</div>
+                <div class="tile-title">בעיות תנועה והספק</div>
+                <div class="tile-sub" id="motion-count">תרגול ממוקד</div>
+            </button>
+
+            <button class="menu-tile featured" onclick="showLessons()" style="background: linear-gradient(135deg,#0EA5E9,#0369A1); box-shadow: 0 10px 26px rgba(14,165,233,0.32);">
+                <div class="tile-icon-wrap" style="background:rgba(255,255,255,0.2);">📘</div>
+                <div class="featured-text">
+                    <div class="tile-title">שיעור יומי</div>
+                    <div class="tile-sub">תיאוריה · תרגול · מבחן 🎓</div>
+                </div>
+                <div class="tile-arrow">←</div>
+            </button>
+
+            <button class="menu-tile" onclick="showFormulas()" style="grid-column: 1 / -1;">
+                <div class="tile-icon-wrap orange">📄</div>
+                <div class="tile-title">דף נוסחאות</div>
+                <div class="tile-sub">כל הנוסחאות במקום אחד 📐</div>
+            </button>
+        </div>
+    </div>
+
+    <div class="screen" id="quiz-screen">
+        <div class="quiz-card">
+            <button class="quiz-back" onclick="goHome()">→ חזרה לדף הבית</button>
+            <div class="quiz-header">
+                <span class="q-topic" id="q-topic-label"></span>
+                <span class="q-counter" id="q-counter"></span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="timer-row">
+                <span class="timer-icon">⏱️</span>
+                <div class="timer-bar-bg">
+                    <div class="timer-bar-fill" id="timer-bar" style="width:100%"></div>
+                </div>
+                <span class="timer-text" id="timer-text">1:00</span>
+            </div>
+            <div class="question-box" id="question-text"></div>
+            <div class="options-list" id="options-container"></div>
+            <div class="explanation-box" id="explanation">
+                <h3 id="result-title"></h3>
+                <div id="explanation-body"></div>
+            </div>
+            <button class="next-btn" id="next-btn" onclick="loadNextQuestion()">השאלה הבאה ←</button>
+        </div>
+    </div>
+
+    <div class="screen" id="finish-screen">
+        <div class="finish-card">
+            <div class="finish-icon" id="finish-icon">🏆</div>
+            <div class="finish-title">סיימת את התרגול!</div>
+            <div class="finish-sub">הנה הציון שלך</div>
+            <div class="score-circle">
+                <div class="score-num" id="final-score-num">0</div>
+                <div class="score-denom" id="final-score-denom">מתוך 5</div>
+            </div>
+            <div class="score-msg" id="final-msg"></div>
+            <button class="restart-btn" onclick="restartQuiz()">🔄 תרגול נוסף</button>
+        </div>
+    </div>
+
+    <div class="screen" id="stats-screen">
+        <div class="stats-screen-title">הסטטיסטיקה שלי 📊</div>
+        <div class="stats-screen-sub">כל הנתונים נשמרים במכשיר שלך</div>
+        <div class="stats-grid">
+            <div class="stat-tile accent wide">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="stat-points">0</div>
+                <div class="stat-label">ניקוד מצטבר</div>
+                <div class="pct-bar-wrap">
+                    <div class="pct-bar-bg"><div class="pct-bar-fill" id="stat-points-bar" style="width:0%"></div></div>
+                    <div class="pct-bar-label" id="stat-points-label">0 / 750 נקודות ליעד</div>
+                </div>
+            </div>
+            <div class="stat-tile">
+                <div class="stat-icon">📝</div>
+                <div class="stat-value" id="stat-total">0</div>
+                <div class="stat-label">שאלות שנענו</div>
+            </div>
+            <div class="stat-tile">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="stat-correct">0</div>
+                <div class="stat-label">תשובות נכונות</div>
+            </div>
+            <div class="stat-tile wide">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" id="stat-pct">—</div>
+                <div class="stat-label">אחוז הצלחה כללי</div>
+            </div>
+        </div>
+        <button class="stats-reset-btn" onclick="confirmReset()">🗑️ איפוס כל הנתונים</button>
+    </div>
+
+    <div class="screen" id="category-screen">
+        <div class="category-screen-header">
+            <button class="quiz-back" onclick="goHome()">→ חזרה לדף הבית</button>
+            <div class="category-screen-title" id="category-screen-title"></div>
+            <div class="category-screen-sub" id="category-screen-sub"></div>
+        </div>
+        <div id="category-questions-list"></div>
+    </div>
+
+    <div class="screen" id="lessons-screen">
+        <button class="quiz-back" onclick="goHome()">→ חזרה לדף הבית</button>
+        <div class="category-screen-title">שיעורים 📘</div>
+        <div class="category-screen-sub">בחר נושא ללמידה מעמיקה</div>
+        <div style="margin-top:16px;" id="lessons-list"></div>
+    </div>
+
+    <div class="screen" id="lesson-screen">
+        <button class="quiz-back" id="lesson-back-btn" onclick="lessonBack()">→ חזרה לשיעורים</button>
+        <div id="lesson-content"></div>
+    </div>
+
+    <div class="screen" id="formulas-screen">
+        <button class="quiz-back" onclick="goHome()">→ חזרה לדף הבית</button>
+        <div class="category-screen-title">דף נוסחאות 📄</div>
+        <div class="formula-search-wrap">
+            <input type="text" id="formula-search" class="formula-search-input"
+                   placeholder="חיפוש נוסחה..." oninput="filterFormulas(this.value)">
+        </div>
+        <div id="formulas-list"></div>
+    </div>
+
+    <div class="screen" id="geometry-topics-screen">
+        <button class="quiz-back" onclick="showLessons()">→ חזרה לשיעורים</button>
+        <div class="category-screen-title">📐 גיאומטריה — בחר נושא</div>
+        <div class="category-screen-sub">בחר תת-נושא ללמידה מעמיקה</div>
+        <div style="margin-top:16px;" id="geometry-topics-list"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-btn active" id="nav-home" onclick="goHome()">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">בית</span>
+        </button>
+        <button class="nav-btn" id="nav-stats" onclick="showStats()">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">סטטיסטיקה</span>
+        </button>
+        <button class="nav-btn" onclick="showComingSoon('פרופיל')">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">פרופיל</span>
+        </button>
+    </div>
+
+    <div class="toast-overlay" id="toast-overlay">
+        <div class="toast-card">
+            <div class="toast-icon">🚧</div>
+            <div class="toast-title">בקרוב! ✨</div>
+            <div class="toast-text" id="toast-text">האימון הממוקד ייפתח בקרוב!</div>
+            <button class="toast-btn" onclick="closeToast()">הבנתי, תודה! 😊</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
