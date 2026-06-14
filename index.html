@@ -27,12 +27,12 @@
 <body>
 <div class="app">
 
-    <div class="screen active" id="home-screen">
+    <div class="screen" id="home-screen">
         <div class="top-bar">
             <div class="profile-block">
-                <div class="avatar">א</div>
+                <div class="avatar" id="user-avatar">?</div>
                 <div class="profile-text">
-                    <div class="greeting">היי אלעד 👋</div>
+                    <div class="greeting" id="greeting-text">היי 👋</div>
                     <div class="daily-progress" id="daily-progress-label">התקדמות יומית: 0/10 שאלות 🎯</div>
                     <div class="daily-bar-bg"><div class="daily-bar-fill" id="daily-bar-fill"></div></div>
                 </div>
@@ -204,6 +204,44 @@
         <div style="margin-top:16px;" id="geometry-topics-list"></div>
     </div>
 
+    <div class="screen" id="onboarding-screen">
+        <div class="onboarding-inner">
+            <div class="onboard-logo">🧠✨</div>
+            <div class="onboard-title">Psychometrix</div>
+            <div class="onboard-sub">בואו נתחיל! ספר לנו קצת עליך</div>
+
+            <div class="onboard-field">
+                <div class="onboard-field-label">מה השם שלך?</div>
+                <input type="text" id="onboard-name" class="onboard-name-input"
+                       placeholder="למשל: אלעד" oninput="validateOnboarding()">
+            </div>
+
+            <div class="onboard-field">
+                <div class="onboard-field-label">מה ציון היעד שלך?</div>
+                <div class="onboard-goals">
+                    <button class="onboard-goal-btn" data-goal="650" onclick="selectGoal(this)">650 🎯</button>
+                    <button class="onboard-goal-btn" data-goal="700" onclick="selectGoal(this)">700 🎯</button>
+                    <button class="onboard-goal-btn" data-goal="750" onclick="selectGoal(this)">750 🏆</button>
+                    <button class="onboard-goal-btn" data-goal="800+" onclick="selectGoal(this)">800+ 🌟</button>
+                </div>
+            </div>
+
+            <button class="onboard-start-btn" id="onboard-start-btn" onclick="submitOnboarding()" disabled>
+                יאללה נתחיל! 🚀
+            </button>
+        </div>
+    </div>
+
+    <div class="screen" id="profile-screen">
+        <div class="category-screen-title">הפרופיל שלי 👤</div>
+        <div class="profile-card">
+            <div class="profile-card-avatar" id="profile-avatar">?</div>
+            <div class="profile-card-name" id="profile-name-display"></div>
+            <div class="profile-card-goal" id="profile-goal-display"></div>
+            <button class="profile-edit-btn" onclick="openProfileEdit()">✏️ ערוך פרופיל</button>
+        </div>
+    </div>
+
     <div class="bottom-nav">
         <button class="nav-btn active" id="nav-home" onclick="goHome()">
             <span class="nav-icon">🏠</span>
@@ -213,7 +251,7 @@
             <span class="nav-icon">📊</span>
             <span class="nav-label">סטטיסטיקה</span>
         </button>
-        <button class="nav-btn" onclick="showComingSoon('פרופיל')">
+        <button class="nav-btn" id="nav-profile" onclick="showProfile()">
             <span class="nav-icon">👤</span>
             <span class="nav-label">פרופיל</span>
         </button>
